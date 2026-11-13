@@ -254,6 +254,7 @@
       height: graph.offsetHeight,
       idleResetSeconds: cfg.idleResetSeconds,
       onPick: (nd) => spotlight(nd),
+      loading: !!cfg.dataUrl, // مع الشيت: نقاط تحميل لين توصل الأسماء
       onZoom: (z) => { $('#zoomLevel').textContent = '×' + toAr(Math.round(z * 10) / 10); }
     });
     fitStage();

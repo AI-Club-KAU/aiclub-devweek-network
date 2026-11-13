@@ -27,6 +27,7 @@
       this.onZoom = opts.onZoom || function () {};
       this.onPick = opts.onPick || function () {};   // لما أحد يضغط على اسم
       this.spot = null;                               // اسم قديم معروض مؤقتًا في النص (لحظة تصوير)
+      this.loading = !!opts.loading;                  // لين توصل الأسماء أول مرة نعرض نقاط تحميل بدل «كن الأول!»
       this.idleReset = opts.idleResetSeconds || 20;
 
       // منطقة توزيع الأسماء (نترك مساحة تحت لأزرار التكبير)
@@ -102,6 +103,7 @@
 
     // تحميل كل الأسماء مرة وحدة (بدون حركة)
     setVisitors(list) {
+      this.loading = false;
       this.nodes = [];
       this.center = null;
       this.spot = null;
@@ -740,6 +742,19 @@
       }
       if (!this.center) {
         // ما فيه أحد سجّل للحين
+        if (this.loading) {
+          // نقاط تحميل تنبض لين يرد مصدر الأسماء
+          this.drawSphere(ctx, 0, 0, this.R, { label: '', tw: 1 }, 1, false, z, t);
+          ctx.save();
+          ctx.fillStyle = '#ffffff';
+          for (let i = 0; i < 3; i++) {
+            const a = 0.35 + 0.65 * Math.max(0, Math.sin(t * 4 - i * 0.9));
+            ctx.globalAlpha = a;
+            ctx.beginPath(); ctx.arc((i - 1) * this.R * 0.28, 0, this.R * 0.085, 0, TAU); ctx.fill();
+          }
+          ctx.restore();
+          return;
+        }
         if (!this.emptyLabel) this.emptyLabel = { label: 'كن الأول!', tw: 0 };
         this.drawSphere(ctx, 0, 0, this.R, this.emptyLabel, 1, false, z, t);
         return;
