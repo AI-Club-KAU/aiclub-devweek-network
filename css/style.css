@@ -1,0 +1,348 @@
+/* =========================================================
+   شاشة الحضور — Dev Week · نادي الذكاء الاصطناعي
+   كل المقاسات بالبكسل على لوحة 1440×810 (نفس مقاس التصميم)،
+   وملف app.js يكبّر اللوحة كاملة لتعبّي الشاشة.
+   ========================================================= */
+
+:root {
+  --purple: #7e36e2;
+  --purple-deep: #6a27d6;
+  --purple-50: #f8f5fe;
+  --purple-100: #efe7fd;
+  --navy: #1e1240;
+  --ink: #3e345c;
+  --muted: #6e6693;
+  --line: #e6ddf8;
+  --green: #2f9e45;        /* للنصوص (تباين أعلى) */
+  --green-bright: #3fd463; /* أخضر الشعار */
+  --green-50: #ebfbef;
+  --brand-grad: linear-gradient(100deg, #7e36e2 0%, #8a45ee 35%, #2fbf63 100%);
+  --bg: #f3effb;
+  --white: #ffffff;
+  --font: 'Rubik', 'Segoe UI', Tahoma, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--font);
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+.icon {
+  width: 1em; height: 1em; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2.2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ---------- اللوحة الأساسية ---------- */
+.stage {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: var(--w, 1440px); height: var(--h, 810px);
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transform-origin: center;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, #ddd2f4 1.15px, transparent 1.6px);
+  background-size: 24px 24px;
+  background-position: 6px 10px;
+}
+
+/* ---------- الشعارات والتاريخ ---------- */
+.brand {
+  position: absolute;
+  left: 39px; top: 27px;
+  height: 67px;
+  display: flex; align-items: center; gap: 15px;
+  direction: ltr;
+}
+.brand__aiclub { height: 41px; width: auto; }
+.brand__divider { width: 1.5px; height: 38px; background: #d6cbee; border-radius: 2px; margin-inline-end: 5px; }
+.brand__fcit { height: 67px; width: auto; }
+
+.date-pill {
+  position: absolute;
+  left: 43px; top: 100px;
+  height: 38px;
+  padding: 0 16px 0 18px;
+  display: flex; align-items: center; gap: 9px;
+  background: var(--white);
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(98, 60, 180, 0.07);
+  font-size: 16px; font-weight: 700; color: var(--navy);
+  white-space: nowrap;
+}
+.date-pill .icon { font-size: 18px; color: var(--green); stroke-width: 2; }
+
+/* ---------- العنوان الثابت ---------- */
+.hero {
+  position: absolute;
+  right: 43px; top: 32px;
+  text-align: right;
+}
+.hero__meta {
+  display: flex; align-items: center; gap: 13px;
+  font-size: 15px; font-weight: 500; color: var(--ink);
+}
+.badge {
+  display: inline-flex; align-items: center;
+  height: 26px; padding: 0 13px;
+  border-radius: 999px;
+  background: var(--brand-grad); color: var(--white);
+  font-size: 14.5px; font-weight: 600;
+  direction: ltr;
+}
+.hero__title {
+  margin-top: 8px;
+  font-size: 58px; font-weight: 900; line-height: 1.12;
+  letter-spacing: -0.5px;
+  color: var(--navy);
+}
+.hero__title span {
+  color: var(--purple);
+  background: linear-gradient(100deg, #7e36e2 10%, #2fbf63 95%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero__sub {
+  margin-top: 4px;
+  font-size: 18px; font-weight: 400; color: var(--muted);
+}
+
+/* ---------- بطاقة الباركود ---------- */
+.join {
+  position: absolute;
+  left: 40px; top: 150px; bottom: 24px;
+  width: 330px;
+  padding: 24px 22px;
+  display: flex; flex-direction: column; justify-content: center;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(130% 55% at 50% 118%, rgba(63, 212, 99, 0.75), rgba(63, 212, 99, 0) 62%),
+    radial-gradient(70% 40% at 100% 0%, rgba(63, 212, 99, 0.22), rgba(63, 212, 99, 0) 70%),
+    var(--purple);
+  color: var(--white);
+  text-align: center;
+  box-shadow: 0 18px 40px rgba(126, 54, 226, 0.22);
+}
+.join__title { font-size: 33px; font-weight: 800; line-height: 1.15; white-space: nowrap; }
+.join__sub { margin-top: 10px; font-size: 16.5px; font-weight: 400; line-height: 1.45; opacity: 0.94; }
+.join__qr {
+  width: 240px; height: 240px;
+  flex: none;
+  margin: 22px auto 0;
+  padding: 18px;
+  border-radius: 22px;
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(63, 212, 99, 0.55);
+}
+.join__qr svg { display: block; width: 100%; height: 100%; }
+.join__warning {
+  position: absolute; left: 0; right: 0; bottom: 12px;
+  font-size: 11.5px; color: #ffe08a;
+}
+.join__steps {
+  list-style: none;
+  margin: 26px 4px 0;
+  display: grid; gap: 12px;
+  text-align: right;
+}
+.join__steps li {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 17px; font-weight: 500; line-height: 1.3;
+}
+.join__steps li span {
+  flex: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--green-bright); color: var(--navy);
+  font-size: 15px; font-weight: 800;
+}
+
+/* ---------- لوحة الشبكة (أكبر عنصر في الشاشة) ---------- */
+.panel {
+  position: absolute;
+  left: 386px; right: 40px; top: 150px; bottom: 24px;
+  border-radius: 30px;
+  background: var(--white);
+  box-shadow: 0 14px 44px rgba(90, 50, 170, 0.06);
+}
+
+.welcome {
+  position: absolute;
+  right: 26px; top: 16px; left: 300px;
+  text-align: right;
+}
+.welcome__live {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15.5px; font-weight: 600; color: var(--green);
+}
+.welcome__next {
+  color: var(--muted);
+  font-weight: 500;
+}
+.welcome__live i {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--green-bright);
+  animation: live 1.8s ease-out infinite;
+}
+.welcome__name {
+  margin-top: 1px;
+  font-size: 40px; font-weight: 900; line-height: 1.15;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.welcome__name span { display: inline-block; color: var(--purple); }
+.welcome__name span.swap { animation: swap 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+
+.counter {
+  position: absolute;
+  left: 24px; top: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.counter b {
+  font-size: 60px; font-weight: 900; line-height: 1;
+  color: var(--purple);
+  background: linear-gradient(160deg, #2fbf63 0%, #7e36e2 70%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.counter b.bump { animation: bump 0.6s ease-out; }
+.counter span {
+  font-size: 16px; line-height: 1.25; color: var(--muted);
+}
+
+/* منطقة الشبكة */
+.graph {
+  position: absolute;
+  left: 20px; right: 20px; top: 88px; bottom: 50px;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 45%, rgba(126, 54, 226, 0.06), transparent 70%),
+    radial-gradient(ellipse 45% 55% at 100% 100%, rgba(63, 212, 99, 0.09), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 0% 0%, rgba(63, 212, 99, 0.07), transparent 70%),
+    var(--purple-50);
+  overflow: hidden;
+}
+.graph canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+.graph canvas.dragging { cursor: grabbing; }
+.graph canvas.can-pick { cursor: pointer; }
+
+.graph__controls {
+  position: absolute;
+  left: 12px; bottom: 10px;
+  height: 34px; padding: 0 6px;
+  display: flex; align-items: center;
+  background: var(--white);
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(98, 60, 180, 0.08);
+}
+.graph__controls button {
+  display: flex; align-items: center; gap: 5px;
+  height: 100%; padding: 0 10px;
+  font-size: 14px; font-weight: 500; color: var(--purple);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+.graph__controls button:hover { background: var(--purple-100); }
+.graph__controls .icon { font-size: 16px; }
+.graph__controls .sep { width: 1px; height: 18px; background: var(--line); }
+
+.graph__hint {
+  position: absolute;
+  right: 12px; bottom: 8px;
+  height: 31px; padding: 0 13px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--white);
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(98, 60, 180, 0.06);
+  font-size: 14.5px; color: var(--ink);
+  pointer-events: none;
+}
+.graph__hint .icon { font-size: 15px; color: var(--green); }
+.graph__hint bdi { font-weight: 700; color: var(--purple); }
+
+/* الدليل والهاشتاق */
+.panel__foot {
+  position: absolute;
+  left: 26px; right: 25px; bottom: 14px;
+  height: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.legend {
+  list-style: none;
+  display: flex; align-items: center; gap: 26px;
+  font-size: 16px; color: var(--ink);
+}
+.legend li { display: flex; align-items: center; gap: 8px; }
+.sw {
+  width: 19px; height: 19px; border-radius: 50%;
+  display: inline-block; flex: none;
+  background: radial-gradient(circle at 35% 30%, #fff 30%, #efe7fd);
+  border: 1px solid #dccff7;
+  box-shadow: -2px 0 4px rgba(126, 54, 226, 0.12);
+}
+.sw--kaust { border: 1.5px dashed var(--green); background-clip: content-box; padding: 2px; }
+.sw--recent { border: 2px solid var(--purple); }
+.sw--latest {
+  border: 0;
+  background: linear-gradient(160deg, #3fd463 0%, #36b98a 18%, #8a45ee 50%, #6420d0 100%);
+}
+.foot-end { display: flex; align-items: center; gap: 10px; }
+
+/* زر صورة نهاية اليوم: صغير وباهت، يوضح بس لما يقرب منه الماوس */
+.snap-btn {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--muted);
+  opacity: 0.28;
+  transition: opacity 0.2s, background 0.2s;
+}
+.snap-btn .icon { font-size: 15px; }
+.snap-btn:hover, .snap-btn:focus-visible { opacity: 1; background: var(--purple-100); color: var(--purple); }
+.snap-btn.busy { opacity: 1; pointer-events: none; animation: snap-busy 0.8s ease-in-out infinite alternate; }
+@keyframes snap-busy { to { opacity: 0.35; } }
+
+.hashtag {
+  font-size: 24px; font-weight: 800; color: var(--green);
+}
+
+/* ---------- حركات ---------- */
+@keyframes live {
+  0%   { box-shadow: 0 0 0 0 rgba(47, 158, 69, 0.55); }
+  100% { box-shadow: 0 0 0 9px rgba(47, 158, 69, 0); }
+}
+@keyframes swap {
+  0%   { opacity: 0; transform: translateY(18px) scale(0.9); filter: blur(4px); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+@keyframes bump {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+/* إخفاء مؤشر الماوس على شاشة البوث إذا ما تحرك */
+body.idle, body.idle * { cursor: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome__live i, .welcome__name span.swap, .counter b.bump { animation: none; }
+}

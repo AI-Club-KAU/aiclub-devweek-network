@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>شبكتنا تكبر بكم | Dev Week · AIClub</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/favicon.png">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- الشاشة مصممة على مقاس 1440×810 وتتكبّر تلقائيًا على أي شاشة 16:9 -->
+  <main class="stage" id="stage">
+
+    <!-- الشعارات + التاريخ (يسار) -->
+    <div class="brand">
+      <img class="brand__aiclub" src="assets/img/aiclub-logo.png" alt="AIClub">
+      <span class="brand__divider" aria-hidden="true"></span>
+      <img class="brand__fcit" src="assets/img/fcit-logo.png" alt="كلية الحاسبات وتقنية المعلومات - جامعة الملك عبدالعزيز">
+    </div>
+
+    <div class="date-pill">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+      <span id="today">—</span>
+    </div>
+
+    <!-- العنوان الثابت (يمين) -->
+    <header class="hero">
+      <div class="hero__meta">
+        <span class="badge">Dev Week</span>
+        <span>بوث نادي الذكاء الاصطناعي · كلية الحاسبات وتقنية المعلومات</span>
+      </div>
+      <h1 class="hero__title">شبكتنا تكبر <span>بكم</span></h1>    </header>
+
+    <!-- بطاقة الباركود -->
+    <aside class="join">
+      <h2 class="join__title">خذ مكانك في الشبكة</h2>
+      <p class="join__sub">امسح الباركود، وخلال ثوانٍ يظهر اسمك على الشاشة</p>
+      <div class="join__qr" id="qr" role="img" aria-label="باركود صفحة التسجيل"></div>      <ol class="join__steps">
+        <li><span>١</span>امسح الباركود بجوالك</li>
+        <li><span>٢</span>عبّي بياناتك</li>
+        <li><span>٣</span>استلم بطاقتك وشوف اسمك هنا</li>
+      </ol>
+    </aside>
+
+    <!-- لوحة الشبكة -->
+    <section class="panel">
+      <div class="welcome" aria-live="polite">
+        <div class="welcome__live"><i aria-hidden="true"></i><span id="liveLabel">مباشر · انضم للتو</span><span class="welcome__next" id="nextUp" hidden></span></div>
+        <div class="welcome__name">أهلًا <span id="latestName">بكم</span></div>
+      </div>
+
+      <div class="counter">
+        <b id="count">٠</b>
+        <span>اسم يضيء<br>شبكتنا</span>
+      </div>
+
+      <div class="graph" id="graph">
+        <canvas id="network" aria-label="شبكة أسماء الحضور"></canvas>
+
+        <div class="graph__controls">
+          <button type="button" data-action="zoom-in">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20M10.5 7.8v5.4M7.8 10.5h5.4"/></svg>
+            تكبير
+          </button>
+          <span class="sep" aria-hidden="true"></span>
+          <button type="button" data-action="zoom-out">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20M7.8 10.5h5.4"/></svg>
+            تصغير
+          </button>
+          <span class="sep" aria-hidden="true"></span>
+          <button type="button" data-action="fit">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15"/></svg>
+            عرض الكل
+          </button>
+        </div>
+
+        <div class="graph__hint">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>          <bdi dir="ltr" id="zoomLevel">×١</bdi>
+        </div>
+      </div>
+
+      <footer class="panel__foot">
+        <ul class="legend">
+          <li><i class="sw sw--visitor"></i>زائر</li>
+          <li><i class="sw sw--kaust"></i>مشارك في برنامج كاوست</li>
+          <li><i class="sw sw--recent"></i>أحدث ٥ انضموا</li>
+          <li><i class="sw sw--latest"></i>آخر من انضم</li>
+        </ul>
+        <div class="foot-end">
+          <button type="button" class="snap-btn" id="snapBtn" title="تنزيل صورة الشبكة (S)" aria-label="تنزيل صورة الشبكة">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>
+          </button>
+          <div class="hashtag">#نقود_المستقبل</div>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script src="js/vendor/qrcode.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/names.js"></script>
+  <script src="js/qr.js"></script>
+  <script src="js/network.js"></script>
+  <script src="js/data-source.js"></script>
+  <script src="js/snapshot-assets.js"></script>
+  <script src="js/snapshot.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
