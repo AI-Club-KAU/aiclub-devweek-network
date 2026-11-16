@@ -39,7 +39,7 @@
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
   }
 
-  async function build({ network, count, dateText }) {
+  async function build({ network, count, todayCount, dateText }) {
     const assets = window.SNAPSHOT_ASSETS || {};
     const [aiclub, fcit] = await Promise.all([
       loadImage(assets.aiclub || 'assets/img/aiclub-logo.png'),
@@ -122,7 +122,18 @@
     ctx.fillText(num, right, fy);
     ctx.font = `500 34px ${FONT}`;
     ctx.fillStyle = C.muted;
-    ctx.fillText('اسم أضاء شبكتنا', right - nw, fy - 6);
+    const label = 'اسم أضاء شبكتنا';
+    ctx.fillText(label, right - nw, fy - 6);
+
+    // كم سجّل اليوم (يوم التنزيل)
+    if (todayCount != null) {
+      const lw = ctx.measureText(label + '   ').width;
+      const x = right - nw - lw;
+      const today = `· منهم ${toAr(todayCount)} اليوم`;
+      ctx.font = `700 34px ${FONT}`;
+      ctx.fillStyle = C.green;
+      ctx.fillText(today, x, fy - 6);
+    }
 
     ctx.textAlign = 'left';
     ctx.direction = 'rtl';

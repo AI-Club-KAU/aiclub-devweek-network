@@ -56,7 +56,24 @@
     if (!name) return null;
     if (blocked.some((w) => name.includes(w))) return null;
     const kaust = truthy(obj.kaust ?? obj.isKaust ?? obj.kaustParticipant ?? obj.participant ?? obj['مشارك']);
-    return { name, label: firstName(name), full: fullName(name), kaust };
+    // تاريخ التسجيل yyyy-MM-dd (من الشيت). لو ما فيه (وضع التجربة) = اليوم
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(String(obj.date || '')) ? String(obj.date) : todayKey();
+    return { name, label: firstName(name), full: fullName(name), kaust, date };
+  }
+
+  function todayKey() {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  }
+
+  // تواريخ كل اللي في الشبكة (لصورة الشبكة: من … إلى … ، وكم سجّل اليوم)
+  let visitorDates = [];
+
+  function fmtDay(key) {
+    const [y, m, d] = key.split('-').map(Number);
+    return new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-arab', { day: 'numeric', month: 'long', year: 'numeric' })
+      .format(new Date(y, m - 1, d));
   }
 
   // الاسم الكامل للعرض (آخر من سجّل + لما يمر الماوس على الاسم)
@@ -154,12 +171,14 @@
   function addVisitor(item) {
     const v = normalize(item);
     if (!v || !network) return;
+    visitorDates.push(v.date);
     queue.push(v);
     pump();
   }
 
   function loadInitial(items) {
     const list = items.map(normalize).filter(Boolean);
+    visitorDates = list.map((v) => v.date);
     queue.length = 0;
     renderNextUp();
     endSpotlight(true);
@@ -177,10 +196,13 @@
     const btn = $('#snapBtn');
     btn.classList.add('busy');
     try {
+      const today = todayKey();
+      const first = visitorDates.length ? visitorDates.reduce((a, b) => (b < a ? b : a)) : today;
       await window.BoothSnapshot.download({
         network,
         count: network.count,
-        dateText: $('#today').textContent
+        todayCount: visitorDates.filter((d) => d === today).length,
+        dateText: first < today ? `من ${fmtDay(first)} إلى ${fmtDay(today)}` : fmtDay(today)
       });
     } finally {
       btn.classList.remove('busy');
